@@ -88,14 +88,13 @@ def image_to_patches(image: np.ndarray, block_shape: List[int]) -> np.ndarray:
       patch_width * block_width
   ), 'block_width=%d should evenly divide width=%d.'%(block_width, width)
 
-  patch_size = patch_height * patch_width
-  paddings = 2*[[0, 0]]
-
-  patches = tf.space_to_batch(image, [patch_height, patch_width], paddings)
-  patches = tf.split(patches, patch_size, 0)
-  patches = tf.stack(patches, axis=3)
+  batch = image.shape[0]
+  patches = tf.reshape(
+      image,
+      [batch, block_height, patch_height, block_width, patch_width, channel])
+  patches = tf.transpose(patches, [0, 1, 3, 2, 4, 5])
   patches = tf.reshape(patches,
-                       [num_blocks, patch_height, patch_width, channel])
+                       [batch * num_blocks, patch_height, patch_width, channel])
   return patches.numpy()
 
 
@@ -111,18 +110,16 @@ def patches_to_image(patches: np.ndarray, block_shape: List[int]) -> np.ndarray:
     The unfolded image shaped [B, H, W, C].
   """
   block_height, block_width = block_shape
-  paddings = 2 * [[0, 0]]
 
   patch_height, patch_width, channel = patches.shape[-3:]
-  patch_size = patch_height * patch_width
-
-  patches = tf.reshape(patches,
-                       [1, block_height, block_width, patch_size, channel])
-  patches = tf.split(patches, patch_size, axis=3)
-  patches = tf.stack(patches, axis=0)
-  patches = tf.reshape(patches,
-                       [patch_size, block_height, block_width, channel])
-  image = tf.batch_to_space(patches, [patch_height, patch_width], paddings)
+  batch = patches.shape[0] // (block_height * block_width)
+  patches = tf.reshape(
+      patches,
+      [batch, block_height, block_width, patch_height, patch_width, channel])
+  patches = tf.transpose(patches, [0, 1, 3, 2, 4, 5])
+  image = tf.reshape(
+      patches,
+      [batch, block_height * patch_height, block_width * patch_width, channel])
   return image.numpy()
 
 
