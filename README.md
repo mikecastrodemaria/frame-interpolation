@@ -124,6 +124,17 @@ the number of times the frame interpolator is invoked. When the number of frames
 in a directory is `num_frames`, the number of output frames will be
 `(2^times_to_interpolate+1)*(num_frames-1)`.
 
+### Local Gradio demo
+
+Windows users can launch a small Gradio interface with
+`start_gradio_windows.bat`. The script creates a virtual environment,
+installs the requirements and starts the demo. Because TensorFlow 2.6
+is not distributed for Windows, the script installs TensorFlow 2.12
+instead. **Python 3.10 or newer is required**, so make sure `py -3.10`
+is available on your system. The interface lets you select two images
+and adjust interpolation settings to generate either the mid‑frame or a
+video of the interpolated frames.
+
 ## Datasets
 
 We use [Vimeo-90K](http://data.csail.mit.edu/tofu/dataset/vimeo_triplet.zip) as
