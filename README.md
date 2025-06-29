@@ -128,9 +128,11 @@ in a directory is `num_frames`, the number of output frames will be
 
 Windows users can launch a small Gradio interface with
 `start_gradio_windows.bat`. The script creates a virtual environment,
-installs the requirements and starts the demo. It allows selecting two
-images and adjusting the interpolation settings to generate either the
-mid‑frame or a video of the interpolated frames.
+installs the requirements and starts the demo. **Python 3.9 is required**
+because TensorFlow 2.6 does not have wheels for newer versions. Ensure
+that `py -3.9` is available on your system. The interface lets you
+select two images and adjust interpolation settings to generate either
+the mid‑frame or a video of the interpolated frames.
 
 ## Datasets
 
